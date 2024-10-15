@@ -27,6 +27,7 @@ def detalhe_animal(request, animal_id):
         imagens.append(animal.imagens.url)  # Adiciona a imagem principal
         # Caso tenha outras imagens em subpastas, você pode listar as imagens que deseja
         # Essa parte depende de como você estruturou as subpastas e como as imagens são nomeadas
+        
 
     return render(request, 'detalhe_animal.html', {'animal': animal, 'imagens': imagens})
 
