@@ -8,7 +8,7 @@ DICA: Para abrir o terminal no VS Code pelo Windows: `Ctrl + Shift + '` *(a tecl
   `python -m venv .venv`
 
 * Ative o venv <br>
-  `.\.venv\script\active`
+  `.\.venv\Scripts\activate`
 
 * Instale as dependencias <br>
   ` pip install -r requirements.txt`
