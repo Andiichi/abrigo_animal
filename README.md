@@ -11,7 +11,7 @@ DICA: Para abrir o terminal no VS Code pelo Windows: `Ctrl + Shift + '` *(a tecl
   `.\.venv\Scripts\activate`
 
 * Instale as dependencias <br>
-  ` pip install -r requirements.txt`
+  ` pip install -r requirements.txt`  
 
 * Faça seu primeiro teste no django <br>
-`python manage.py runserver`
+  `python manage.py runserver`
