@@ -1,6 +1,6 @@
-Projeto - Abrigo de animais
+## Projeto - Abrigo de animais
 
-Para iniciar o projeto na sua máquia após o clone:
+### Para iniciar o projeto na sua máquia após o clone:
 
 * Crie um ambiente virtual python <br>
   `python -m venv .venv`
