@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+<h1 class="text-center m-5 ">Bem vindos ao Abrigo Animal </h1>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <div class="carousel-indicators">
+            {% for animal in animais %}
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for animal in animais %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    {% if animal.imagens %}
+                        <img src="{{ animal.imagens.url }}" class="d-block w-100" alt="Imagem de {{ animal.nome }}" style="height: 400px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/imagem_default.jpg' %}" class="d-block w-100" alt="Imagem padrão" style="height: 400px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <h2 class="text-center mt-5 ">Adote. Não Compre.</h2>
+
+</div>
+
+{% endblock %}
