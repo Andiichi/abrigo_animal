@@ -1,0 +1,4 @@
+.venv/*
+abrigo_animal/__pycache__/*
+site_abrigo/__pycache__/*
+site_abrigo/migrations/__pycache__/*
