@@ -1,14 +1,31 @@
 {% extends 'base.html' %}
-
+{% load bootstrap5 %}
 {% block content %}
 
 <div class="container mx-auto p-4">
+    {% if sucesso %}
+    <div class="alert alert-success" role="alert">
+        Animal cadastrado com sucesso!
+    </div>
+    {% endif %}
+    
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
 
-    <form method="post" action="" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" name="submit">
+
+        {% bootstrap_form form %}
+
+        <div class="btn-group gap-2 " role="group">
+            <button type="submit" class="btn btn-primary rounded">Cadastrar</button>
+            <button type="reset" name="submit" class="btn btn-primary rounded ">Limpar</button>
+        </div>
     </form>
+
 </div>
 
 

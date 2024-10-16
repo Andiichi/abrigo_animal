@@ -5,9 +5,9 @@ from .models import CadastroAnimal
 
 
 class CadastroAnimalAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'idade', 'get_especie_display', 'get_sexo_display']  # Campos a serem exibidos na lista
+    list_display = ['nome',  'especie', 'data_criacao']  # Campos a serem exibidos na lista
     search_fields = ['nome', 'raca']  # Campos que podem ser pesquisados
-    list_filter = ['especie', 'sexo']  # Filtros disponíveis na barra lateral
+    list_filter = ['especie', 'sexo', 'disponivel_para_adocao']  # Filtros disponíveis na barra lateral
 
     # Exibir imagem no admin
     def image_tag(self, obj):
@@ -17,6 +17,7 @@ class CadastroAnimalAdmin(admin.ModelAdmin):
     image_tag.short_description = 'Imagem'
 
     # Incluir a imagem na lista
-    list_display += ['image_tag']
+    list_display += ['image_tag', 'disponivel_para_adocao']
+
 
 admin.site.register(CadastroAnimal, CadastroAnimalAdmin)

@@ -35,19 +35,31 @@ def cadastro_pessoa(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'cadastro_pessoa'</h1>")
 
 def cadastro_animal(request):
-   form = FormCadastroDeAnimal()
-   uploads = CadastroAnimal.objects.all()
+    form = FormCadastroDeAnimal()
+    uploads = CadastroAnimal.objects.all()
 
-   if request.method == "POST":
-       form = FormCadastroDeAnimal(request.POST, request.FILES)
-       if form.is_valid():
-           form.save()
-           return redirect("home")
-       else:
-           # Feedback de erro (opcional)
-           return render(request, "cadastro_animal.html", context={"form": form, "uploads": uploads, "error": "Formulário inválido"})
+    if request.method == "POST":
+        form = FormCadastroDeAnimal(request.POST, request.FILES)
+        if form.is_valid():  # Valida se o formulário está correto
+            form.save()  # Salva o novo animal no banco de dados
+            # Define a variável de sucesso para exibir a mensagem no template
+            sucesso = True
+            contexto = {
+                'form': FormCadastroDeAnimal(),  # Reseta o formulário após o envio
+                'uploads': uploads,
+                'sucesso': sucesso  # Indica que o cadastro foi bem-sucedido
+            }
+            return render(request, "cadastro_animal.html", contexto)
+        else:
+            # Se o formulário não for válido, retorna com os erros
+            return render(request, "cadastro_animal.html", {
+                'form': form,
+                'uploads': uploads,
+                'error': "Formulário inválido"
+            })
 
-   return render(request, "cadastro_animal.html", context={"form": form, "uploads": uploads})
+    # Renderiza a página inicialmente ou se não houver POST
+    return render(request, "cadastro_animal.html", {'form': form, 'uploads': uploads})
 
 def gestao_doacao(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'gestao_doacao'</h1>")

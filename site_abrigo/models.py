@@ -27,10 +27,12 @@ class CadastroAnimal(models.Model):
     raca = models.CharField(unique=False, null=True, blank=True, default='Viralata', max_length=80)
     especie = models.CharField(null=False, blank=False, max_length=1, choices=ESPECIES)
     imagens = models.ImageField(upload_to=upload_to, null=True, blank=True)
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    disponivel_para_adocao = models.BooleanField(default=True)
 
 
     def __str__(self):
-        return f'{self.nome} - {self.especie}'
+        return f'Nome: {self.nome} - Espécie: {self.especie}'
     
 
     
