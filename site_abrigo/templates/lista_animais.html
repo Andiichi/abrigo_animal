@@ -9,14 +9,14 @@
         {% for animal in animais %}
         <div class="col-md-3 mb-4"> <!-- 4 colunas em telas médias e grandes -->
             <div class="card">
-                {% if animal.imagens %}
-                <img src="{{ animal.imagens.url }}" class="card-img-top" alt="Imagem de {{ animal.nome }}" style="height: 200px; object-fit: cover;">
+                {% if animal.imagem %}
+                <img src="{{ animal.imagem.url }}" class="card-img-top" alt="Imagem de {{ animal.nome }}" style="height: 200px; object-fit: cover;">
                 {% else %}
                 <img src="{% static 'img/imagem_default.jpg' %}" class="card-img-top" alt="Imagem padrão" style="height: 200px; object-fit: cover;">
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ animal.nome }} </h5>
-                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca }} | {{ animal.get_sexo_display }}</p>
+                    <h5 class="card-title">{{ animal.nome|capfirst }} </h5>
+                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.get_sexo_display }}</p>
                     <a href="{% url 'detalhe_animal' animal.id %}" class="btn btn-primary">Ver mais detalhes</a>
                 </div>
             </div>

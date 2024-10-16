@@ -17,8 +17,8 @@
         <div class="carousel-inner">
             {% for animal in animais %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    {% if animal.imagens %}
-                        <img src="{{ animal.imagens.url }}" class="d-block w-100 rounded" alt="Imagem de {{ animal.nome }}" style="height: 400px; object-fit: cover;">
+                    {% if animal.imagem %}
+                        <img src="{{ animal.imagem.url }}" class="d-block w-100 rounded" alt="Imagem de {{ animal.nome }}" style="height: 400px; object-fit: cover;">
                     {% else %}
                         <img src="{% static 'img/imagem_default.jpg' %}" class="d-block w-100 rounded" alt="Imagem padrão" style="height: 400px; object-fit: containcover;">
                     {% endif %}

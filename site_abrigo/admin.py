@@ -11,8 +11,8 @@ class CadastroAnimalAdmin(admin.ModelAdmin):
 
     # Exibir imagem no admin
     def image_tag(self, obj):
-        if obj.imagens:
-            return mark_safe(f'<img src="{obj.imagens.url}" style="width: 100px; height: auto;" />')
+        if obj.imagem:
+            return mark_safe(f'<img src="{obj.imagem.url}" style="width: 100px; height: auto;" />')
         return "No image"
     image_tag.short_description = 'Imagem'
 

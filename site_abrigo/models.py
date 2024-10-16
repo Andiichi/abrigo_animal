@@ -11,9 +11,9 @@ def upload_to(instance, filename):
     
 class CadastroAnimal(models.Model):
     ESPECIES = (
-        ('1', 'Cachorro'),
-        ('2', 'Gato'),
-        ('3', 'Outros'),
+        ('CACHORRO', 'Cachorro'),
+        ('GATO', 'Gato'),
+        ('OUTROS', 'Outros'),
     )
 
     SEXO = (
@@ -25,8 +25,8 @@ class CadastroAnimal(models.Model):
     idade = models.IntegerField(null=False, blank=False) 
     sexo = models.CharField(null=False, blank=False, max_length=1, choices=SEXO)
     raca = models.CharField(unique=False, null=True, blank=True, default='Viralata', max_length=80)
-    especie = models.CharField(null=False, blank=False, max_length=1, choices=ESPECIES)
-    imagens = models.ImageField(upload_to=upload_to, null=True, blank=True)
+    especie = models.CharField(null=False, blank=False, max_length=8, choices=ESPECIES)
+    imagem = models.ImageField(upload_to=upload_to, null=True, blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     disponivel_para_adocao = models.BooleanField(default=True)
 
