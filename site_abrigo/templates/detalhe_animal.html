@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% load bootstrap5 %}
 {% bootstrap_css %}
@@ -6,7 +7,7 @@
 {% block content %}
 
 <h1>Detalhes de {{ animal.nome|capfirst }}</h1>
-<p>Criado em: {{ animal.data_criacao|date:"d/m/Y H:i" }}</p>
+<p class="text-semibold">Criado em: {{ animal.data_criacao|date:"d/m/Y" }} </p>
 
 <div class="row g-4">
     <!-- Coluna para a imagem -->
@@ -22,20 +23,21 @@
 
     <!-- Coluna para os detalhes -->
     <div class="col-md-8">
-        <h1 class="display-5">{{ animal.nome|capfirst }}</h1>
-        <p>Idade: {{ animal.idade }} anos</p>
-        <p>Raça: {{ animal.raca|capfirst }}</p>
-        <p>Sexo: {{ animal.get_sexo_display }}</p>
-        {% if animal.get_especie_display == '1' %}
-        <p>Espécie: Cachorro</p>
-        {% elif animal.get_especie_display == '2' %}
-        <p>Espécie: Gato</p>
-        {% elif animal.get_especie_display == '3' %}
-        <p>Espécie: Outros</p>
-        {% else %}
-        <p>Espécie: {{ animal.get_especie_display }}</p>
-        {% endif %}
-    </div>
+            <h1 class="display-5">{{ animal.nome|capfirst }}</h1>
+            <p>Idade: {{ animal.idade }} anos</p>
+            <p>Raça: {{ animal.raca|capfirst }}</p>
+            <p>Sexo: {{ animal.get_sexo_display }}</p>
+            {% if animal.get_especie_display == '1' %}
+            <p>Espécie: Cachorro</p>
+            {% elif animal.get_especie_display == '2' %}
+            <p>Espécie: Gato</p>
+            {% elif animal.get_especie_display == '3' %}
+            <p>Espécie: Outros</p>
+            {% else %}
+            <p>Espécie: {{ animal.get_especie_display }}</p>
+            {% endif %}
+          </div>
+  
 </div>
 
 {% endblock %}
