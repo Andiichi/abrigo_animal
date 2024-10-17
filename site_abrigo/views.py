@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect,  get_object_or_404
-from django.utils import timezone
 from django.http import HttpResponse
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from django.db.models import Q
+
 
 from .forms import FormCadastroDeAnimal
 from .models import CadastroAnimal
-
 
 def home(request):
     # Buscar todos os animais cadastrados no banco de dados
@@ -77,11 +77,16 @@ def cadastro_animal(request):
             # Deixar os campos de nome e raça em minúsculo
             animal.nome = animal.nome.lower()
             animal.raca = animal.raca.lower()
+            
+            # Salvar a data de criação formatada
+            animal.data_criacao = timezone.now()
 
             # Adicionar o nome e a raça ao nome do arquivo de imagem
             if animal.imagem:
+
+
                  # Novo nome do arquivo com o nome e raça do animal
-                novo_nome_arquivo = f"{animal.nome}_{animal.raca}.jpg"
+                novo_nome_arquivo = f"{animal.nome}_{animal.raca}_{animal.data_criacao}.jpg"
                 
                 # Renomear o arquivo antes de salvar
                 animal.imagem.name = novo_nome_arquivo
@@ -98,9 +103,7 @@ def cadastro_animal(request):
                 
                 # Salvar a nova imagem no campo imagem do objeto
                 animal.imagem.save(novo_nome_arquivo, ContentFile(output.read()), save=False)
-
-            # Salvar a data de criação formatada
-            animal.data_criacao = timezone.now().strftime('%d/%m/%Y')
+           
             
             # Agora salva o objeto no banco
             animal.save()

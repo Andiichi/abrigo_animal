@@ -6,38 +6,48 @@
 
 {% block content %}
 
-<h1>Detalhes de {{ animal.nome|capfirst }}</h1>
-<p class="text-semibold">Criado em: {{ animal.data_criacao|date:"d/m/Y" }} </p>
+<div class="container-fluid p-4  d-flex flex-column min-vh-100">
 
-<div class="row g-4">
-    <!-- Coluna para a imagem -->
-    <div class="col-md-4">
-        {% if animal.imagem %}
-        <img src="{{ animal.imagem.url }}" class="card-img-top" alt="Imagem de {{ animal.nome }}"
-            style="height: 200px; object-fit: cover;">
-        {% else %}
-        <img src="{% static 'img/imagem_default.jpg' %}" class="card-img-top" alt="Imagem padrão"
-            style="height: 200px; object-fit: cover;">
-        {% endif %}
+    <h1 class="display-6">Detalhes do bichinho</h1>
+    <div class="card mt-4" style="max-width: 100%;">
+        <div class=" card-body">
+    
+            <div class="row g-2">
+                <!-- Coluna para a imagem -->
+                <div class="col-md-4">
+                    {% if animal.imagem %}
+                    <img src="{{ animal.imagem.url }}" alt="Imagem de {{ animal.nome }}" class="img-fluid rounded"
+                        style="height: 100%; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'img/imagem_default.jpg' %}" alt="Imagem padrão" class="img-fluid rounded"
+                        style="height: 100%; object-fit: cover;">
+                    {% endif %}
+                </div>
+    
+                <!-- Coluna para os detalhes -->
+                <div class="col-md-8">
+                    <h5 class="card-title">Nome (Apelido): <span class="fs-4"><strong>{{ animal.nome|capfirst }}</strong></span></h5>
+                    <p class="card-text"><strong>Idade:</strong> {{ animal.idade }} anos</p>
+                    <p class="card-text"><strong>Raça:</strong> {{ animal.raca|capfirst }}</p>
+                    <p class="card-text"><strong>Sexo:</strong> {{ animal.sexo }}</p>
+                    <p class="card-text"><strong>Espécie:</strong> {{ animal.especie }}</p>
+                    <!-- Botão ao final -->
+                    <div class="mt-4">
+                        <a href="#" class="btn btn-primary">Adotar {{ animal.nome|capfirst }}</a>
+                    </div>
+    
+                </div>
+                
+            </div>
+        </div>
+        <div class="card-footer">
+            <p class="card-text"><small class="text-muted">Criado em: {{ animal.data_criacao|date:"d/m/Y" }}</small>
+            </p>
+        </div>
     </div>
-
-    <!-- Coluna para os detalhes -->
-    <div class="col-md-8">
-            <h1 class="display-5">{{ animal.nome|capfirst }}</h1>
-            <p>Idade: {{ animal.idade }} anos</p>
-            <p>Raça: {{ animal.raca|capfirst }}</p>
-            <p>Sexo: {{ animal.get_sexo_display }}</p>
-            {% if animal.get_especie_display == '1' %}
-            <p>Espécie: Cachorro</p>
-            {% elif animal.get_especie_display == '2' %}
-            <p>Espécie: Gato</p>
-            {% elif animal.get_especie_display == '3' %}
-            <p>Espécie: Outros</p>
-            {% else %}
-            <p>Espécie: {{ animal.get_especie_display }}</p>
-            {% endif %}
-          </div>
-  
 </div>
+
+
+
 
 {% endblock %}

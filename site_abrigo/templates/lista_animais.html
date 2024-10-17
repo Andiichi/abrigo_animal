@@ -7,6 +7,7 @@
 {% block content %}
 <div class="container my-4">
     <h1 class="text-center mb-4">Lista de Animais Cadastrados</h1>
+
     <div class="row g-4">
         {% for animal in animais %}
         <div class="col-12 col-md-6 col-lg-4">
@@ -18,7 +19,7 @@
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title display-6">{{ animal.nome|capfirst }}</h5>
-                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.get_sexo_display }}</p>
+                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.sexo }}</p>
                     {% if animal.disponivel_para_adocao%}
                     <p class="text-success fw-bold">Disponível para adoção</p>
                     {% else %}
