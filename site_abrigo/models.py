@@ -22,10 +22,6 @@ class CadastroAnimal(models.Model):
     disponivel_para_adocao = models.BooleanField(default=True)
 
     def __str__(self):
-<<<<<<< Updated upstream
-        return f'Nome: {self.nome} - Espécie: {self.get_especie_display()}'
-=======
         return self.nome
->>>>>>> Stashed changes
     
 

@@ -33,7 +33,7 @@ def pesquisar_animais(request):
         pesquisa_query = request.GET['pesquisa_query']
 
         #fazendo pessquisa com multiplas palavra chaves e campos
-        query_clean = Q(Q(nome__icontains = pesquisa_query) | Q(raca__icontains = pesquisa_query))
+        query_clean = Q(Q(nome___unaccent__icontains = pesquisa_query) | Q(raca___unaccent__icontains = pesquisa_query))
 
         animais = CadastroAnimal.objects.filter(query_clean)
 
