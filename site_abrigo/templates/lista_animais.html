@@ -7,20 +7,6 @@
 {% block content %}
 <div class="container my-4">
     <h1 class="text-center mb-4">Lista de Animais Cadastrados</h1>
-
-    <!-- #pesquisar animal por palavra chave -->
-    <form class="d-flex mb-4" role="search" method="POST">
-        {% csrf_token %}
-        <input
-           class="form-control me-2"
-           type="search"
-           placeholder="Search"
-           name="search_query"
-           required aria-label="Search"
-        >
-        <button class="btn btn-outline-success" type="submit">Search</button>
-       </form>
-
     <div class="row g-4">
         {% for animal in animais %}
         <div class="col-12 col-md-6 col-lg-4">

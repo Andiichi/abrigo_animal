@@ -15,6 +15,16 @@ def home(request):
     # Renderizar o template com a lista de animais
     return render(request, 'home.html', context={'animais': animais})
 
+def pesquisar_animais(request):
+    if 'pesquisa_query' in request.GET:
+        pesquisa_query = request.GET['pesquisa_query']
+        animais = CadastroAnimal.objects.filter(nome__icontains = pesquisa_query)
+        
+        return render(request, 'pesquisar_animais.html', {'pesquisa_query':pesquisa_query , 'animais': animais})
+    
+    else:
+        return render(request, 'pesquisar_animais.html', {})
+
 def lista_animais(request):
     # Buscar todos os animais cadastrados no banco de dados
     animais = CadastroAnimal.objects.all()
