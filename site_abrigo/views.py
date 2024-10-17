@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.utils import timezone
 from django.http import HttpResponse
-from .forms import FormCadastroDeAnimal
-from .models import CadastroAnimal
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
+from django.db.models import Q
+
+from .forms import FormCadastroDeAnimal
+from .models import CadastroAnimal
 
 
 def home(request):
@@ -15,22 +17,34 @@ def home(request):
     # Renderizar o template com a lista de animais
     return render(request, 'home.html', context={'animais': animais})
 
+
+def lista_animais(request):
+    # Buscar todos os animais cadastrados no banco de dados disponivel para adoção
+    animais = CadastroAnimal.objects.filter(disponivel_para_adocao = True)
+
+    # animais = CadastroAnimal.objects.all()
+
+    # Renderizar o template com a lista de animais
+    return render(request, 'lista_animais.html', context={'animais': animais})
+
+
 def pesquisar_animais(request):
     if 'pesquisa_query' in request.GET:
         pesquisa_query = request.GET['pesquisa_query']
-        animais = CadastroAnimal.objects.filter(nome__icontains = pesquisa_query)
+
+        #fazendo pessquisa com multiplas palavra chaves e campos
+        query_clean = Q(Q(nome__icontains = pesquisa_query) | Q(raca__icontains = pesquisa_query))
+
+        animais = CadastroAnimal.objects.filter(query_clean)
+
+        #fazendo pesquisa só de um campo
+        # animais = CadastroAnimal.objects.filter(nome__icontains = pesquisa_query)
         
         return render(request, 'pesquisar_animais.html', {'pesquisa_query':pesquisa_query , 'animais': animais})
     
     else:
         return render(request, 'pesquisar_animais.html', {})
 
-def lista_animais(request):
-    # Buscar todos os animais cadastrados no banco de dados
-    animais = CadastroAnimal.objects.all()
-    
-    # Renderizar o template com a lista de animais
-    return render(request, 'lista_animais.html', context={'animais': animais})
 
 def detalhe_animal(request, animal_id):
     animal = get_object_or_404(CadastroAnimal, id=animal_id)
