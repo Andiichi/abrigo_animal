@@ -26,7 +26,6 @@ class CadastroAnimal(models.Model):
     sexo = models.CharField(null=False, blank=False, max_length=1, choices=SEXO)
     raca = models.CharField(unique=False, null=True, blank=True, default='Viralata', max_length=80)
     especie = models.CharField(null=False, blank=False, max_length=8, choices=ESPECIES)
-    imagem = models.ImageField(upload_to=upload_to, null=True, blank=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     disponivel_para_adocao = models.BooleanField(default=True)
 
@@ -35,4 +34,6 @@ class CadastroAnimal(models.Model):
         return f'Nome: {self.nome} - Espécie: {self.especie}'
     
 
-    
+class GaleriaAnimal(models.Model):
+    titulo = models.ForeignKey(CadastroAnimal, on_delete=models.CASCADE)
+    imagens = models.ImageField(upload_to=upload_to) 

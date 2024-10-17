@@ -7,7 +7,7 @@
 {% block content %}
 <style>
     .custom-caption {
-        background-color: rgba(164, 97, 241, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
         /* Fundo semi-transparente */
         padding: 15px;
         border-radius: 10px;
@@ -40,10 +40,10 @@
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
                         {% if animal.imagem %}
                         <img src="{{ animal.imagem.url }}" class="d-block w-100" alt="Imagem de {{ animal.nome }}"
-                            style="height: 550px; object-fit: cover;">
+                            style="height: 60vh; object-fit: cover;">
                         {% else %}
                         <img src="{% static 'img/imagem_default.jpg' %}" class="d-block w-100" alt="Imagem padrão"
-                            style="height: 80vh; object-fit: cover;">
+                            style="height: 60vh; object-fit: cover;">
                         {% endif %}
                         <div class="carousel-caption d-none d-md-block custom-caption">
                             <h5>{{ animal.nome }}</h5>
