@@ -8,32 +8,21 @@ def upload_to(instance, filename):
         return os.path.join('imagens', instance.nome, f'{instance.id}_{filename}')
     else:
         return os.path.join('imagens', instance.nome, filename)  # Para o caso em que o ID ainda não está disponível
-    
+
+SEXO = (('femea', 'Fêmea'), ('macho', 'Macho'),)
+ESPECIES = (('cachorro', 'Cachorro'), ('gato', 'Gato'), ('outros', 'Outros'),)
+
 class CadastroAnimal(models.Model):
-    ESPECIES = (
-        ('CACHORRO', 'Cachorro'),
-        ('GATO', 'Gato'),
-        ('OUTROS', 'Outros'),
-    )
-
-    SEXO = (
-        ('F', 'Fêmea'),
-        ('M', 'Macho'),
-    )
-
     nome = models.CharField(unique=False, null=False, blank=False, max_length=80)
     idade = models.IntegerField(null=False, blank=False) 
-    sexo = models.CharField(null=False, blank=False, max_length=1, choices=SEXO)
-    raca = models.CharField(unique=False, null=True, blank=True, default='Viralata', max_length=80)
+    sexo = models.CharField(null=False, max_length=5, choices=SEXO)
+    raca = models.CharField(null=False, blank=True, default='Viralata', max_length=80)
     especie = models.CharField(null=False, blank=False, max_length=8, choices=ESPECIES)
+    imagem = models.ImageField(upload_to=upload_to)
     data_criacao = models.DateTimeField(auto_now_add=True)
     disponivel_para_adocao = models.BooleanField(default=True)
 
-
     def __str__(self):
-        return f'Nome: {self.nome} - Espécie: {self.especie}'
+        return f'Nome: {self.nome} - Espécie: {self.get_especie_display()}'
     
 
-class GaleriaAnimal(models.Model):
-    titulo = models.ForeignKey(CadastroAnimal, on_delete=models.CASCADE)
-    imagens = models.ImageField(upload_to=upload_to) 

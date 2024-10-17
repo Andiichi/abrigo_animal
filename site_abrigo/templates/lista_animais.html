@@ -32,7 +32,7 @@
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title display-6">{{ animal.nome|capfirst }}</h5>
-                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.get_sexo_display }}</p>
+                    <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.sexo }}</p>
                     {% if animal.disponivel_para_adocao%}
                     <p class="text-success fw-bold">Disponível para adoção</p>
                     {% else %}

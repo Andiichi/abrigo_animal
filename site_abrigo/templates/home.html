@@ -27,6 +27,8 @@
                 <h1 class="text-center m-4">Bem-vindos ao Abrigo Animal</h1>
 
             </div>
+
+            <!-- Carrossel -->
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     {% for animal in animais %}
@@ -47,10 +49,10 @@
                         {% endif %}
                         <div class="carousel-caption d-none d-md-block custom-caption">
                             <h5>{{ animal.nome }}</h5>
-                            <p>{{ animal.descricao }}</p>
                         </div>
                     </div>
                     {% endfor %}
+           
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
                     data-bs-slide="prev">
