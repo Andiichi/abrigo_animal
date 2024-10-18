@@ -1,25 +1,26 @@
 from django.db import models
-import os
+from django.utils.safestring import mark_safe
 
-def upload_to(instance, CadastroAnimal):
+# Função que define onde o arquivo será salvo
+def upload_to(instance, filename):
+    # Verifica se o nome está presente para evitar erro ao salvar a imagem
+    nome_animal = instance.nome if hasattr(instance, 'nome') and instance.nome else instance.id
+    return f'imagens/{nome_animal}/{filename}'
 
-    if isinstance(instance, CadastroAnimal):
-        # Use instance.id to get the unique ID after the instance is saved
-        if instance.id:
-            return os.path.join('imagens', instance.nome, f'{instance.id}_{instance.nome.lower()}')
-        else:
-            return os.path.join('imagens', instance.nome, instance.nome)  # Para o caso em que o ID ainda não está disponível
-
-    else:
-        return os.path.join('imagens', instance.animal.nome, f'{instance.id}_{instance.animal.nome.lower()}') 
-
-
-SEXO = (('femea', 'Fêmea'), ('macho', 'Macho'),)
-ESPECIES = (('cachorro', 'Cachorro'), ('gato', 'Gato'), ('outros', 'Outros'),)
 
 class CadastroAnimal(models.Model):
+    SEXO = (
+        ('femea', 'Fêmea'),
+        ('macho', 'Macho'),
+    )
+    ESPECIES = (
+        ('cachorro', 'Cachorro'),
+        ('gato', 'Gato'),
+        ('outros', 'Outros'),
+    )
+
     nome = models.CharField(unique=False, null=False, blank=False, max_length=80)
-    idade = models.IntegerField(null=False, blank=False) 
+    idade = models.IntegerField(null=False, blank=False)
     sexo = models.CharField(null=False, max_length=5, choices=SEXO)
     raca = models.CharField(null=False, blank=True, default='Viralata', max_length=80)
     especie = models.CharField(null=False, blank=False, max_length=8, choices=ESPECIES)
@@ -27,14 +28,37 @@ class CadastroAnimal(models.Model):
     data_criacao = models.DateTimeField(auto_now_add=True)
     disponivel_para_adocao = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = 'Cadastro de Animal'
+        verbose_name_plural = 'Cadastro de Animais'
+        ordering = ['nome']
+
     def __str__(self):
-        return f'Nome: {self.nome} - Espécie: {self.get_especie_display()}'
+        return self.nome
     
+     # Exibir a imagem no admin
+    def image_tag(self):
+        if self.imagem:
+            return mark_safe(f'<img src="{self.imagem.url}" style="width: 100px; height: auto;" />')
+        return "Sem imagem"
+
+    image_tag.short_description = 'Imagem'
 
 class GaleriaImagem(models.Model):
-    animal = models.ForeignKey(CadastroAnimal,on_delete=models.DO_NOTHING,  related_name='galeria')
-    titulo = models.CharField(unique=False, null=True, blank=True, max_length=80)
+    animal = models.ForeignKey(CadastroAnimal, on_delete=models.CASCADE, related_name='galeria')
     imagem = models.ImageField(upload_to=upload_to)
 
+    class Meta:
+        verbose_name = 'Imagem da Galeria'
+        verbose_name_plural = 'Imagens da Galeria'
+
     def __str__(self):
-        return self.titulo
+        return f'Imagem de {self.animal.nome}'
+
+    # Exibir a imagem no admin
+    def image_tag(self):
+        if self.imagem:
+            return mark_safe(f'<img src="{self.imagem.url}" style="width: 100px; height: auto;" />')
+        return "Sem imagem"
+
+    image_tag.short_description = 'Imagem'

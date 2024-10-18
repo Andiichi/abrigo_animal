@@ -10,8 +10,24 @@ admin.sites.AdminSite.site_header = 'Site Abrigo Animal'
 admin.sites.AdminSite.site_title = 'Abrigo Animal'
 admin.sites.AdminSite.index_title = 'Admin Abrigo Animal'
 
+
 class AnimalImagemInline(admin.TabularInline):
     model = GaleriaImagem
+    readonly_fields = ['image_tag', 'animal_nome']  # Campos somente leitura
+
+    # Exibir imagem inline
+    def image_tag(self, obj):
+        if obj.imagem:
+            return mark_safe(f'<img src="{obj.imagem.url}" style="width: 100px; height: auto;" />')
+        return "Sem imagem"
+    
+    image_tag.short_description = 'Imagem'
+
+    # Exibir nome do animal relacionado
+    def animal_nome(self, obj):
+        return obj.animal.nome
+    
+    animal_nome.short_description = 'Nome do Animal'
 
 
 class CadastroAnimalAdmin(admin.ModelAdmin):
