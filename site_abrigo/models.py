@@ -28,13 +28,5 @@ class CadastroAnimal(models.Model):
     disponivel_para_adocao = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'Nome: {self.nome} - Espécie: {self.get_especie_display()}'
+        return self.nome
     
-
-class GaleriaImagem(models.Model):
-    animal = models.ForeignKey(CadastroAnimal,on_delete=models.DO_NOTHING,  related_name='galeria')
-    titulo = models.CharField(unique=False, null=True, blank=True, max_length=80)
-    imagem = models.ImageField(upload_to=upload_to)
-
-    def __str__(self):
-        return self.titulo
