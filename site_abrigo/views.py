@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
-from .forms import FormCadastroDeAnimal
-from .models import CadastroAnimal
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 from django.utils import timezone
 
+
+from .forms import FormCadastroDeAnimal, FormInserirImagem
+from .models import CadastroAnimal, GaleriaImagem
 
 def home(request):
     # Buscar todos os animais cadastrados no banco de dados
@@ -22,6 +23,8 @@ def lista_animais(request):
     # Renderizar o template com a lista de animais
     return render(request, 'lista_animais.html', context={'animais': animais})
 
+
+
 def detalhe_animal(request, animal_id):
     animal = get_object_or_404(CadastroAnimal, id=animal_id)
 
@@ -32,28 +35,28 @@ def detalhe_animal(request, animal_id):
         imagem.append(animal.imagem.url)  # Adiciona a imagem principal
         # Caso tenha outras imagem em subpastas, você pode listar as imagem que deseja
         # Essa parte depende de como você estruturou as subpastas e como as imagem são nomeadas
-        
 
+    # import pdb; pdb.set_trace()
     return render(request, 'detalhe_animal.html', {'animal': animal, 'imagem': imagem})
+
+
 
 def cadastro_pessoa(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'cadastro_pessoa'</h1>")
 
 def cadastro_animal(request):
     form = FormCadastroDeAnimal()
+    form_imagem = FormInserirImagem()
     uploads = CadastroAnimal.objects.all()
 
     if request.method == "POST":
         form = FormCadastroDeAnimal(request.POST, request.FILES)
+        form_imagem = FormInserirImagem(request.POST, request.FILES)
 
-        if form.is_valid():  # Valida se o formulário está correto
+        if form.is_valid() and form_imagem.is_valid():  # Valida se o formulário está correto
              
             animal = form.save(commit=False)  # Não salva ainda
            
-            # Deixar os campos de nome e raça em minúsculo
-            animal.nome = animal.nome.lower()
-            animal.raca = animal.raca.lower()
-            
             # Salvar a data de criação formatada
             animal.data_criacao = timezone.now()
 
@@ -84,12 +87,14 @@ def cadastro_animal(request):
             # Agora salva o objeto no banco
             animal.save()
             form.save()
+            form_imagem.save()  # Salva a imagem
 
             # Define a variável de sucesso para exibir a mensagem no template
             sucesso = True
 
             contexto = {
                 'form': FormCadastroDeAnimal(),  # Reseta o formulário após o envio
+                'form_imagem': FormInserirImagem(), # Reseta o formulário após o envio
                 'uploads': uploads,
                 'sucesso': sucesso  # Indica que o cadastro foi bem-sucedido
             }
@@ -100,12 +105,13 @@ def cadastro_animal(request):
             # Se o formulário não for válido, retorna com os erros
             return render(request, "cadastro_animal.html", {
                 'form': form,
+                'form_imagem': form_imagem,
                 'uploads': uploads,
                 'error': "Formulário inválido"
             })
 
     # Renderiza a página inicialmente ou se não houver POST
-    return render(request, "cadastro_animal.html", {'form': form, 'uploads': uploads})
+    return render(request, "cadastro_animal.html", {'form': form, 'uploads': uploads, 'form_imagem': form_imagem})
 
 
 def gestao_doacao(request):

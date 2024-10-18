@@ -44,6 +44,15 @@
             <p class="card-text"><small class="text-muted">Criado em: {{ animal.data_criacao|date:"d/m/Y" }}</small>
             </p>
         </div>
+
+        <h1>Galeria de fotos</h1>
+        
+        {% for item in animal.galeria.all %}
+        {{ item }}
+        <img src="{{ item.imagem.url }}" alt="Imagem de {{ item.titulo }}" class="img-fluid rounded"
+        style="height: 100%; object-fit: cover;">
+
+        {% endfor %}
     </div>
 </div>
 

@@ -2,18 +2,25 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.contrib import messages
 from django.utils.translation import ngettext
-from .models import CadastroAnimal
+
+from .models import CadastroAnimal, GaleriaImagem
 
 # Admin Site configurações
 admin.sites.AdminSite.site_header = 'Site Abrigo Animal'
 admin.sites.AdminSite.site_title = 'Abrigo Animal'
 admin.sites.AdminSite.index_title = 'Admin Abrigo Animal'
 
+class AnimalImagemInline(admin.TabularInline):
+    model = GaleriaImagem
+
+
 class CadastroAnimalAdmin(admin.ModelAdmin):
     list_display = ['nome', 'especie', 'data_criacao', 'sexo']  # Campos a serem exibidos na lista
     search_fields = ['nome', 'raca']  # Campos que podem ser pesquisados
     list_filter = ['especie', 'sexo', 'disponivel_para_adocao']  # Filtros disponíveis na barra lateral
     ordering = ['nome']  # Ordenação por nome
+
+    inlines = [AnimalImagemInline]
 
     # Exibir imagem no admin
     def image_tag(self, obj):
