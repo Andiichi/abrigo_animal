@@ -44,58 +44,42 @@ def detalhe_animal(request, animal_id):
 def cadastro_pessoa(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'cadastro_pessoa'</h1>")
 
+
 def cadastro_animal(request):
-    form = FormCadastroDeAnimal()
+# Sempre inicialize os formulários
+    form_animal = FormCadastroDeAnimal()
     form_imagem = FormInserirImagem()
-    uploads = CadastroAnimal.objects.all()
 
-    if request.method == "POST":
-        form = FormCadastroDeAnimal(request.POST, request.FILES)
-        form_imagem = FormInserirImagem(request.POST, request.FILES)
+    if request.method == 'POST':
+        form_animal = FormCadastroDeAnimal(request.POST)
+        form_imagem = FormInserirImagem(request.FILES)
 
-        if form.is_valid() and form_imagem.is_valid():  # Valida se o formulário está correto
-             
-            animal = form.save(commit=False)  # Não salva ainda
-           
+        if form_animal.is_valid() and form_imagem.is_valid():
             # Salvar a data de criação formatada
             animal.data_criacao = timezone.now()
 
             # Adicionar o nome e a raça ao nome do arquivo de imagem
             if animal.imagem:
-
-
-                 # Novo nome do arquivo com o nome e raça do animal
-                novo_nome_arquivo = f"{animal.nome}_{animal.raca}_{animal.data_criacao}.jpg"
-                
+                # Novo nome do arquivo com o nome e raça do animal
+                novo_nome_arquivo = f"{animal.nome}_{animal.data_criacao}.jpg"
+                    
                 # Renomear o arquivo antes de salvar
                 animal.imagem.name = novo_nome_arquivo
 
-                # Criar uma segunda imagem (opcional: pode ser uma versão editada)
-                # Exemplo: redimensionar a imagem original para criar uma versão menor
-                image = Image.open(animal.imagem)
-                nova_imagem = image.resize((300, 300))  # Exemplo de redimensionamento
+            # Salvar o animal
+            animal = form_animal.save()
 
-                # Salvar a nova imagem
-                output = BytesIO()
-                nova_imagem.save(output, format=image.format)
-                output.seek(0)
-                
-                # Salvar a nova imagem no campo imagem do objeto
-                animal.imagem.save(novo_nome_arquivo, ContentFile(output.read()), save=False)
-           
-            
-            # Agora salva o objeto no banco
-            animal.save()
-            form.save()
-            form_imagem.save()  # Salva a imagem
+            # Salvar a imagem associada ao animal
+            imagem = form_imagem.save(commit=False)
+            imagem.animal = animal  # Atribuindo o animal ao modelo de imagem
+            imagem.save()
 
             # Define a variável de sucesso para exibir a mensagem no template
             sucesso = True
 
             contexto = {
-                'form': FormCadastroDeAnimal(),  # Reseta o formulário após o envio
-                'form_imagem': FormInserirImagem(), # Reseta o formulário após o envio
-                'uploads': uploads,
+                'form': form_animal,  # Reseta o formulário após o envio
+                'form_imagem': form_imagem,
                 'sucesso': sucesso  # Indica que o cadastro foi bem-sucedido
             }
 
@@ -104,15 +88,16 @@ def cadastro_animal(request):
         else:
             # Se o formulário não for válido, retorna com os erros
             return render(request, "cadastro_animal.html", {
-                'form': form,
+                'form': form_animal,
                 'form_imagem': form_imagem,
-                'uploads': uploads,
                 'error': "Formulário inválido"
             })
 
     # Renderiza a página inicialmente ou se não houver POST
-    return render(request, "cadastro_animal.html", {'form': form, 'uploads': uploads, 'form_imagem': form_imagem})
+    return render(request, "cadastro_animal.html", {'form': form_animal, 'form_imagem': form_imagem})
 
+           
+ 
 
 def gestao_doacao(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'gestao_doacao'</h1>")

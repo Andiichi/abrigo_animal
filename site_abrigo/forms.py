@@ -1,14 +1,14 @@
 from django import forms
-
 from .models import CadastroAnimal, GaleriaImagem
 
 class FormCadastroDeAnimal(forms.ModelForm):
     class Meta:
         model = CadastroAnimal
-        fields = ['nome', 'idade','sexo','raca', 'especie', 'disponivel_para_adocao']
+        fields = ['nome', 'idade', 'filhote', 'sexo', 'raca', 'especie', 'disponivel_para_adocao']
         labels = {
-            'nome': 'Nome (apelido)',  # Alterando a label do campo 'nome'
-            'idade': 'Idade (em anos)',  # Alterando a label do campo 'idade'
+            'nome': 'Nome (apelido)',
+            'idade': 'Idade (em anos)',
+            'filhote': 'O bichinho é um filhote?',
             'sexo': 'Sexo',
             'raca': 'Raça',
             'especie': 'Espécie',
@@ -16,7 +16,8 @@ class FormCadastroDeAnimal(forms.ModelForm):
         }
         widgets = {
             'nome': forms.TextInput(attrs={'class': 'form-control', "required": True}),
-            'idade': forms.NumberInput(attrs={'class': 'form-control'}),
+            'idade': forms.TextInput(attrs={'class': 'form-control', "required": False}),
+            'filhote': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'sexo': forms.Select(attrs={'class': 'form-control', 'required': True}, 
                 choices=[
                 ('macho', 'Macho'),
@@ -30,22 +31,45 @@ class FormCadastroDeAnimal(forms.ModelForm):
             ]),
             'raca': forms.TextInput(attrs={'class': 'form-control'}),
             'disponivel_para_adocao': forms.CheckboxInput(attrs={'class': 'form-check-input', "required": True}),
-
         }
 
-    def clean_nome(self):
-        nome = self.cleaned_data.get('nome')
-        return nome.lower()  # Convertendo o nome para minúsculas
+    def clean_nome_raca(self):
+        """
+        Limpa os dados para os campos 'nome' e 'raca', transformando-os em minúsculas
+        e garantindo a consistência dos dados.
+        """
+        cleaned_data = super().clean()
 
-    def clean_raca(self):
-        raca = self.cleaned_data.get('raca')
-        return raca.lower()  # Convertendo a raça para minúsculas
+        nome = cleaned_data.get('nome')
+        raca = cleaned_data.get('raca')
+
+        if nome:
+            cleaned_data['nome'] = nome.lower()  # Converte o nome para minúsculas
+        if raca:
+            cleaned_data['raca'] = raca.lower()  # Converte a raça para minúsculas
+
+        return cleaned_data
+    
+    
+    def clean_idade(self):
+        cleaned_data = super().clean()
+        
+        idade = self.cleaned_data.get('idade')
+
+        if idade is None or idade == 0 :
+            self.filhote = True
+
+        return cleaned_data
+
+    
 
 
 class FormInserirImagem(forms.ModelForm):
     class Meta:
         model = GaleriaImagem
-        fields = ['imagem']  # Define quais campos incluir no formulário
-        label = {'imagem': 'Insira uma foto bem bonita do bichinho'}
-        widgets = {'imagem': forms.ClearableFileInput(
-            attrs={'class': 'form-control-file', 'onchange': 'previewImage(event)'})}
+        fields = ['imagem']
+        labels = {'imagem': 'Insira uma foto bem bonita do bichinho'}
+        widgets = {
+            'imagem': forms.ClearableFileInput
+            (attrs={'class': 'form-control-file', 'onchange': 'previewImage(event)'})
+        }
