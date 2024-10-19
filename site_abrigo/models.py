@@ -35,6 +35,7 @@ class CadastroAnimal(models.Model):
 
     def __str__(self):
         return self.nome
+<<<<<<< HEAD
     
      # Exibir a imagem no admin
     def image_tag(self):
@@ -62,3 +63,6 @@ class GaleriaImagem(models.Model):
         return "Sem imagem"
 
     image_tag.short_description = 'Imagem'
+=======
+    
+>>>>>>> 45433aff7301447c60f08c43826f7b3eb9172379

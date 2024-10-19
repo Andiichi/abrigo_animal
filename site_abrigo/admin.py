@@ -3,13 +3,14 @@ from django.utils.safestring import mark_safe
 from django.contrib import messages
 from django.utils.translation import ngettext
 
-from .models import CadastroAnimal, GaleriaImagem
+from .models import CadastroAnimal
 
 # Admin Site configurações
 admin.sites.AdminSite.site_header = 'Site Abrigo Animal'
 admin.sites.AdminSite.site_title = 'Abrigo Animal'
 admin.sites.AdminSite.index_title = 'Admin Abrigo Animal'
 
+<<<<<<< HEAD
 
 class AnimalImagemInline(admin.TabularInline):
     model = GaleriaImagem
@@ -29,14 +30,14 @@ class AnimalImagemInline(admin.TabularInline):
     
     animal_nome.short_description = 'Nome do Animal'
 
+=======
+>>>>>>> 45433aff7301447c60f08c43826f7b3eb9172379
 
 class CadastroAnimalAdmin(admin.ModelAdmin):
     list_display = ['nome', 'especie', 'data_criacao', 'sexo']  # Campos a serem exibidos na lista
     search_fields = ['nome', 'raca']  # Campos que podem ser pesquisados
     list_filter = ['especie', 'sexo', 'disponivel_para_adocao']  # Filtros disponíveis na barra lateral
     ordering = ['nome']  # Ordenação por nome
-
-    inlines = [AnimalImagemInline]
 
     # Exibir imagem no admin
     def image_tag(self, obj):
