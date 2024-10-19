@@ -35,34 +35,4 @@ class CadastroAnimal(models.Model):
 
     def __str__(self):
         return self.nome
-<<<<<<< HEAD
     
-     # Exibir a imagem no admin
-    def image_tag(self):
-        if self.imagem:
-            return mark_safe(f'<img src="{self.imagem.url}" style="width: 100px; height: auto;" />')
-        return "Sem imagem"
-
-    image_tag.short_description = 'Imagem'
-
-class GaleriaImagem(models.Model):
-    animal = models.ForeignKey(CadastroAnimal, on_delete=models.CASCADE, related_name='galeria')
-    imagem = models.ImageField(upload_to=upload_to)
-
-    class Meta:
-        verbose_name = 'Imagem da Galeria'
-        verbose_name_plural = 'Imagens da Galeria'
-
-    def __str__(self):
-        return f'Imagem de {self.animal.nome}'
-
-    # Exibir a imagem no admin
-    def image_tag(self):
-        if self.imagem:
-            return mark_safe(f'<img src="{self.imagem.url}" style="width: 100px; height: auto;" />')
-        return "Sem imagem"
-
-    image_tag.short_description = 'Imagem'
-=======
-    
->>>>>>> 45433aff7301447c60f08c43826f7b3eb9172379
