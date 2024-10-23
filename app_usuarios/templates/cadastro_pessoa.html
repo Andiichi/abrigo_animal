@@ -3,15 +3,16 @@
 {% load static %}
 {% bootstrap_css %}
 
+{% block 'titulo' %}Cadastro de Pessoa{% endblock %}
 
 {% block content %}
 
 <div class="container mx-auto p-4">
     <div class="d-grid gap-2 d-md-block">
-        <h1>Cadastrar animal</h1>
+        <h1>Cadastrar pessoa</h1>
         {% if sucesso %}
         <div class="alert alert-success" role="alert">
-            Animal cadastrado com sucesso!
+            Usuário cadastrado com sucesso!
         </div>
         {% endif %}
         
@@ -24,7 +25,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
     
-            {% bootstrap_form form %}
+            
             
         </form>
 
@@ -33,6 +34,7 @@
             <button type="submit" class="btn btn-primary rounded">Cadastrar</button>
             <button type="reset" name="submit" class="btn btn-primary rounded ">Limpar</button>
         </div>
+        <a href="/"><button type="reset" name="submit" class="mt-4 btn btn-outline-primary rounded ">Fazer login</button></a>
     </div>
 </div>
 {% endblock %}

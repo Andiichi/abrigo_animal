@@ -1,21 +1,20 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.contrib import messages
-from django.utils.translation import ngettext
-from .models import CadastroAnimal
 
-# Admin Site configurações
-admin.sites.AdminSite.site_header = 'Site Abrigo Animal'
-admin.sites.AdminSite.site_title = 'Abrigo Animal'
-admin.sites.AdminSite.index_title = 'Admin Abrigo Animal'
+from .models import CadastroAnimal, GaleriaAnimal
 
-class CadastroAnimalAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'especie', 'data_criacao', 'sexo']  # Campos a serem exibidos na lista
-    search_fields = ['nome', 'raca']  # Campos que podem ser pesquisados
-    list_filter = ['especie', 'sexo', 'disponivel_para_adocao']  # Filtros disponíveis na barra lateral
-    ordering = ['nome']  # Ordenação por nome
+<<<<<<< HEAD
+class AnimalImagemInline(admin.TabularInline):
+    model = GaleriaAnimal
+=======
+<<<<<<< HEAD
 
-    # Exibir imagem no admin
+class AnimalImagemInline(admin.TabularInline):
+    model = GaleriaImagem
+    readonly_fields = ['image_tag', 'animal_nome']  # Campos somente leitura
+
+    # Exibir imagem inline
     def image_tag(self, obj):
         if obj.imagem:
             return mark_safe(f'<img src="{obj.imagem.url}" style="width: 100px; height: auto;" />')
@@ -23,55 +22,75 @@ class CadastroAnimalAdmin(admin.ModelAdmin):
     
     image_tag.short_description = 'Imagem'
 
+    # Exibir nome do animal relacionado
+    def animal_nome(self, obj):
+        return obj.animal.nome
+    
+    animal_nome.short_description = 'Nome do Animal'
+
+=======
+>>>>>>> 45433aff7301447c60f08c43826f7b3eb9172379
+>>>>>>> 94771717b4749950c25eea373720a4359cefb0d0
+
+class CadastroAnimalAdmin(admin.ModelAdmin):
+    list_display = ['nome', 'especie', 'data_criacao', 'sexo', 'image_tag', 'adocao_tag']  # Adiciona a exibição da imagem
+    search_fields = ['nome']  # Campos que podem ser pesquisados
+    list_filter = ['especie', 'sexo', 'disponivel']  # Filtros disponíveis na barra lateral
+    ordering = ['nome']  # Ordenação por nome
+
+    inlines = [AnimalImagemInline]
+
+    # Função para deletar a imagem
+    def delete_image(self, request, obj):
+        if obj.imagem:
+            obj.delete_image()  # Chama o método delete_image do modelo
+            self.message_user(request, "Imagem deletada com sucesso.", messages.SUCCESS)
+        else:
+            self.message_user(request, "Este animal não possui imagem.", messages.WARNING)
+
+    delete_image.short_description = 'Deletar Imagem'
+
+    # Função para criar o botão de deletar imagem no Django Admin
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path('<int:pk>/delete_image/', self.admin_site.admin_view(self.delete_image), name='animal-delete-image'),
+        ]
+        return custom_urls + urls
+
     # Campo customizado para adoção
     def adocao_tag(self, obj):
-        return obj.disponivel_para_adocao
+        return obj.disponivel
     
     adocao_tag.boolean = True
     adocao_tag.short_description = 'Disponível para adoção'
 
-    # Incluir a imagem e disponibilidade para adoção na lista
-    list_display += ['image_tag', 'adocao_tag']
+    # Exibir a primeira imagem associada ao animal
+    def image_tag(self, obj):
+        # Obtém a primeira imagem associada ao animal
+        primeira_imagem = GaleriaAnimal.objects.filter(animal=obj).first()
+        if primeira_imagem and primeira_imagem.imagem:
+            return mark_safe(f'<img src="{primeira_imagem.imagem.url}" style="width: 100px; height: auto;" />')
+        return "Sem imagem"
+    
+    image_tag.short_description = 'Imagem'
 
-    # Ação personalizada para alterar o sexo para 'fêmea'
+
+    # Ações personalizadas para alterar o sexo do animal
     @admin.action(description="Alterar sexo para Fêmea")
     def marcar_como_femea(self, request, queryset):
-
-        # Altera apenas os animais que atualmente estão marcados como 'macho'
         machos = queryset.filter(sexo="macho")
         updated = machos.update(sexo="femea")
-        
-        # Exibir mensagem de confirmação
-        self.message_user(
-            request,
-            ngettext(
-                "%d animal marcado como 'Fêmea'.",
-                "%d animais marcados como 'Fêmea'.",
-                updated,
-            ) % updated,
-            messages.SUCCESS,
-        )
+        self.message_user(request, f'{updated} animal(is) marcado(s) como Fêmea.')
 
-
-     # Ação personalizada para alterar o sexo para 'macho'
     @admin.action(description="Alterar sexo para Macho")
     def marcar_como_macho(self, request, queryset):
-
-        # Altera apenas os animais que atualmente estão marcados como 'femea'
-        machos = queryset.filter(sexo="femea")
-        updated = machos.update(sexo="macho")
-        
-        # Exibir mensagem de confirmação
-        self.message_user(
-            request,
-            ngettext(
-                "%d animal marcado como 'Macho'.",
-                "%d animais marcados como 'Macho'.",
-                updated,
-            ) % updated,
-            messages.SUCCESS,
-        )
+        femeas = queryset.filter(sexo="femea")
+        updated = femeas.update(sexo="macho")
+        self.message_user(request, f'{updated} animal(is) marcado(s) como Macho.')
 
     actions = [marcar_como_macho, marcar_como_femea]
+
 
 admin.site.register(CadastroAnimal, CadastroAnimalAdmin)
