@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load bootstrap5 %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex flex-column min-vh-100">
+    {% if pesquisa_query %}
+    <div class="mt-5">
+        <div class="text-center">
+            <h1 class="display-6">Você pesquisou... <strong>{{ pesquisa_query|capfirst }}</strong></h1>
+        </div>
+        <hr>
+
+        <div class="row g-4 justify-content-center">
+            {% for animal in animais %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100">
+                    {% if animal.imagem %}
+                    <img src="{{ animal.imagem.url }}" class="card-img-top" alt="Imagem de {{ animal.nome }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'img/imagem_default.jpg' %}" class="card-img-top" alt="Imagem de {{ animal.nome }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title display-6">{{ animal.nome|capfirst }}</h5>
+                        <p class="card-text">{{ animal.idade }} anos | {{ animal.raca|capfirst }} | {{ animal.get_sexo_display }}</p>
+                        {% if animal.disponivel_para_adocao %}
+                        <p class="text-success fw-bold">Disponível para adoção</p>
+                        {% else %}
+                        <p class="text-danger fw-bold">Não disponível para adoção</p>
+                        {% endif %}
+                        <a href="{% url 'detalhe_animal' animal.id %}" class="btn btn-outline-primary w-100">Ver mais detalhes</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% else %}
+    <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
+        <h1 class="display-6">Desculpe... <br>Você precisa pesquisar um animal antes!</h1>
+        <div>
+            <img src="{% static 'img/img_cachorro_pesquisaelse.png' %}" alt="Imagem de cachorro" class="img-fluid" style="max-width: 400px;">
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -27,6 +27,18 @@
 
       </ul>
 
+      <!-- #pesquisar animal por palavra chave -->
+    <form class="d-flex" action="{% url 'pesquisar_animais' %}">
+      <input
+         class="form-control me-2"
+         type="search"
+         placeholder="Pesquisar animal"
+         aria-label="Pesquisar"
+         name="pesquisa_query"
+      >
+      <button class="btn btn-outline-secondary" type="submit">Search</button>
+     </form>
+
     </div>
   </div>
 </nav>
