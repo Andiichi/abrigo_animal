@@ -4,8 +4,33 @@ from django.contrib import messages
 
 from .models import CadastroAnimal, GaleriaAnimal
 
+<<<<<<< HEAD
 class AnimalImagemInline(admin.TabularInline):
     model = GaleriaAnimal
+=======
+<<<<<<< HEAD
+
+class AnimalImagemInline(admin.TabularInline):
+    model = GaleriaImagem
+    readonly_fields = ['image_tag', 'animal_nome']  # Campos somente leitura
+
+    # Exibir imagem inline
+    def image_tag(self, obj):
+        if obj.imagem:
+            return mark_safe(f'<img src="{obj.imagem.url}" style="width: 100px; height: auto;" />')
+        return "Sem imagem"
+    
+    image_tag.short_description = 'Imagem'
+
+    # Exibir nome do animal relacionado
+    def animal_nome(self, obj):
+        return obj.animal.nome
+    
+    animal_nome.short_description = 'Nome do Animal'
+
+=======
+>>>>>>> 45433aff7301447c60f08c43826f7b3eb9172379
+>>>>>>> 94771717b4749950c25eea373720a4359cefb0d0
 
 class CadastroAnimalAdmin(admin.ModelAdmin):
     list_display = ['nome', 'especie', 'data_criacao', 'sexo', 'image_tag', 'adocao_tag']  # Adiciona a exibição da imagem
