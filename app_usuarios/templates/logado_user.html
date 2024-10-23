@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% bootstrap_css %}
+
+
+
+{% block content %}
+
+{% if user.is_authenticated %}
+{% block 'titulo' %}Pagina do {{ user.username }}{% endblock %}
+    <p>Welcome, {{ user.username }}. Thanks for logging in.</p>
+{% else %}
+    <p>Welcome, new user. Please log in.</p>
+    <a href="{% url 'app_usuarios:cadastro_pessoa' %}"><button type="reset" name="submit" class="mt-4 btn btn-outline-primary rounded ">Fazer login</button></a>
+{% endif %}
+
+{% endblock %}

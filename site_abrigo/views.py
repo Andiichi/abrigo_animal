@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
-from PIL import Image
-from io import BytesIO
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.db.models import Q
+import os
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
-
-from .forms import FormCadastroDeAnimal
-from .models import CadastroAnimal
+from .forms import FormCadastroAnimal
+from .models import GaleriaAnimal, CadastroAnimal
 
 def home(request):
     # Buscar todos os animais cadastrados no banco de dados
@@ -46,74 +46,68 @@ def detalhe_animal(request, animal_id):
 def cadastro_pessoa(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'cadastro_pessoa'</h1>")
 
-def cadastro_animal(request):
-    form = FormCadastroDeAnimal()
-    uploads = CadastroAnimal.objects.all()
-
-    if request.method == "POST":
-        form = FormCadastroDeAnimal(request.POST, request.FILES)
-
-        if form.is_valid():  # Valida se o formulário está correto
-             
-            animal = form.save(commit=False)  # Não salva ainda
-           
-            # Deixar os campos de nome e raça em minúsculo
-            animal.nome = animal.nome.lower()
-            animal.raca = animal.raca.lower()
-            
-            # Salvar a data de criação formatada
-            animal.data_criacao = timezone.now()
-
-            # Adicionar o nome e a raça ao nome do arquivo de imagem
-            if animal.imagem:
-
-
-                 # Novo nome do arquivo com o nome e raça do animal
-                novo_nome_arquivo = f"{animal.nome}_{animal.raca}_{animal.data_criacao}.jpg"
-                
-                # Renomear o arquivo antes de salvar
-                animal.imagem.name = novo_nome_arquivo
-
-                # Criar uma segunda imagem (opcional: pode ser uma versão editada)
-                # Exemplo: redimensionar a imagem original para criar uma versão menor
-                image = Image.open(animal.imagem)
-                nova_imagem = image.resize((300, 300))  # Exemplo de redimensionamento
-
-                # Salvar a nova imagem
-                output = BytesIO()
-                nova_imagem.save(output, format=image.format)
-                output.seek(0)
-                
-                # Salvar a nova imagem no campo imagem do objeto
-                animal.imagem.save(novo_nome_arquivo, ContentFile(output.read()), save=False)
-           
-            
-            # Agora salva o objeto no banco
-            animal.save()
-            form.save()
-
-            # Define a variável de sucesso para exibir a mensagem no template
-            sucesso = True
-
-            contexto = {
-                'form': FormCadastroDeAnimal(),  # Reseta o formulário após o envio
-                'uploads': uploads,
-                'sucesso': sucesso  # Indica que o cadastro foi bem-sucedido
-            }
-
-            return render(request, "cadastro_animal.html", contexto)
-        
-        else:
-            # Se o formulário não for válido, retorna com os erros
-            return render(request, "cadastro_animal.html", {
-                'form': form,
-                'uploads': uploads,
-                'error': "Formulário inválido"
-            })
-
-    # Renderiza a página inicialmente ou se não houver POST
-    return render(request, "cadastro_animal.html", {'form': form, 'uploads': uploads})
-
 
 def gestao_doacao(request):
     return HttpResponse("<h1>ABRIGO DE ANIMAIS ! TESTE DE VIEW 'gestao_doacao'</h1>")
+
+
+
+def cadastro_animal(request):
+    if request.method == 'POST':
+        form_animal = FormCadastroAnimal(request.POST, request.FILES)
+        animal_imagem = request.FILES.getlist('animal_imagem')
+
+        if form_animal.is_valid():
+            animal = form_animal.save(commit=False)  # Não salva ainda
+
+           # Deixar os campos de nome e raça em minúsculo
+            animal.nome = animal.nome.lower()
+            animal.save()  # Salve o animal primeiro para gerar o ID
+
+            # Salvar a data de criação
+            data_criacao = timezone.now()
+            data_formatada = data_criacao.strftime('%Y%m%d')  # Formato: YYYYMMDD
+
+            # Criar o caminho da nova pasta
+            nome_pasta = f"{animal.nome}"
+            caminho_pasta = os.path.join(settings.MEDIA_ROOT, 'galeria', nome_pasta)
+            os.makedirs(caminho_pasta, exist_ok=True)  # Cria a pasta se não existir
+
+             # Salva as imagens
+            for i, imagem in enumerate(animal_imagem):
+                # Novo nome do arquivo com o nome do animal e data de criação (e índice para evitar conflito)
+                novo_nome_arquivo = f"{animal.nome}_{data_formatada}_{i+1}.jpg"
+
+                # Cria uma instância de FileSystemStorage para salvar no caminho da nova pasta
+                fs = FileSystemStorage(location=caminho_pasta)
+
+                # Salva a imagem no novo diretório com o nome ajustado
+                caminho_imagem_salva = fs.save(novo_nome_arquivo, imagem)
+
+                # Salva a referência da imagem no banco de dados
+                GaleriaAnimal.objects.create(
+                    animal=animal, 
+                    imagem=os.path.join('galeria', nome_pasta, novo_nome_arquivo)
+                )
+
+            # Define sucesso como True
+            contexto = {
+                'form_animal': FormCadastroAnimal(),  # Reseta o formulário após o envio
+                'sucesso': True
+            }
+            return render(request, 'cadastro_pet.html', contexto)
+        else:
+            contexto = {
+                'form_animal': form_animal,
+                'error': 'Erro ao cadastrar animal. Verifique os dados informados.'
+            }
+            return render(request, 'cadastro_pet.html', contexto)
+    
+    else:
+        form_animal = FormCadastroAnimal()
+        return render(request, 'cadastro_pet.html', {'form_animal': form_animal})
+
+                                                             
+
+
+
