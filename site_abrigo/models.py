@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.safestring import mark_safe
 import os
 from django.conf import settings
 from django.utils import timezone
@@ -53,13 +52,14 @@ class CadastroAnimal(models.Model):
         verbose_name_plural = 'Cadastro de Animais'
         ordering = ['nome']
 
-    class Meta:
-        verbose_name = 'Cadastro de Animal'
-        verbose_name_plural = 'Cadastro de Animais'
-        ordering = ['nome']
+    def __str__(self):
+        return self.nome.upper()
+
+
+class GaleriaAnimal(models.Model):
+    animal = models.ForeignKey(CadastroAnimal, on_delete=models.CASCADE, related_name='galeria')
+    imagem = models.ImageField(upload_to=upload_to_image, blank=True, null=True)
+
 
     def __str__(self):
-
-        return self.nome
-    
-
+        return f'Imagem de {self.animal.nome}'
